@@ -7,4 +7,5 @@ const getName = (from) => {
 module.exports = {
   isProd,
   getName,
+  redisKeys: require('./redisKeys'),
 };

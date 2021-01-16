@@ -5,7 +5,7 @@ if (!isProd) {
 }
 
 const {
-  TG_BOT_TOKEN,
+  TG_MUSIC_BOT_TOKEN,
   RECOGNITION_BOT_MUSIC_WORKING,
   REASON_FOR_DISABLED_RECOGNITION_BOT_MUSIC,
 } = process.env;
@@ -15,19 +15,25 @@ const {
   startCmd,
 } = require('./commands');
 
+const {
+  downloadAndRecognition,
+} = require('./middlewares');
+
 const Telegraf = require('telegraf');
-const bot = new Telegraf(TG_BOT_TOKEN);
+const bot = new Telegraf(TG_MUSIC_BOT_TOKEN);
 
 bot.catch((err) => console.log(err));
 
 bot.command('help', helpCmd);
 bot.command('start', startCmd);
 
-bot.on('message', (ctx) => {
+bot.on('message', async (ctx) => {
   if (RECOGNITION_BOT_MUSIC_WORKING === 'enabled') {
-    // TODO: middleware for handle message
+    await downloadAndRecognition(ctx);
   } else {
-    // TODO: send response about disabled bot REASON_FOR_DISABLED_RECOGNITION_BOT_MUSIC
+    await ctx.replyWithHTML(
+      `<b>${REASON_FOR_DISABLED_RECOGNITION_BOT_MUSIC}</b>`
+    );
   }
 });
 

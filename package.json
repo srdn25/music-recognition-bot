@@ -32,9 +32,10 @@
     "husky": "^4.2.5"
   },
   "dependencies": {
+    "axios": "^0.21.1",
     "node-redis-scan": "^1.2.1",
-    "redis": "^3.0.2",
     "nodemon": "^2.0.4",
+    "redis": "^3.0.2",
     "telegraf": "^3.38.0"
   }
 }

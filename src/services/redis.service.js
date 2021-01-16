@@ -1,20 +1,20 @@
-const redis = require('redis');
+const redisService = require('redis');
 const redisScan = require('node-redis-scan');
 
 const {
-  REDIS_PORT,
-  REDIS_ENDPOINT,
-  REDIS_PASSWORD,
+  MUSIC_BOT_REDIS_PORT,
+  MUSIC_BOT_REDIS_ENDPOINT,
+  MUSIC_BOT_REDIS_PASSWORD,
 } = process.env;
 
 const clientOptions = {
   prefix: 'tg_music_recognition_bot:',
-  ...(REDIS_ENDPOINT && { host: REDIS_ENDPOINT }),
-  ...(REDIS_PORT && { port: REDIS_PORT }),
-  ...(REDIS_PASSWORD && { password: REDIS_PASSWORD }),
+  ...(MUSIC_BOT_REDIS_ENDPOINT && { host: MUSIC_BOT_REDIS_ENDPOINT }),
+  ...(MUSIC_BOT_REDIS_PORT && { port: MUSIC_BOT_REDIS_PORT }),
+  ...(MUSIC_BOT_REDIS_PASSWORD && { password: MUSIC_BOT_REDIS_PASSWORD }),
 };
 
-const client = redis.createClient(clientOptions);
+const client = redisService.createClient(clientOptions);
 const scanner = new redisScan(client);
 
 client.on('error', function (err) {
@@ -23,6 +23,8 @@ client.on('error', function (err) {
 });
 
 const setKeyExp = (key, value, seconds, cb) => client.setex(key, seconds, value, cb);
+
+const setKey = (key, value) => client.set(key, value);
 
 const removeKey = (key) => new Promise((resolve, reject) => {
   client.del(key, (err, result) => {
@@ -48,6 +50,7 @@ const scanByPattern = (pattern, limit = 17) => new Promise((resolve, reject) => 
 module.exports = {
   client,
   setKeyExp,
+  setKey,
   removeKey,
   getKey,
   scanByPattern,
