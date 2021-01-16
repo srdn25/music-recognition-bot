@@ -1,0 +1,40 @@
+{
+  "name": "Music recognition bot",
+  "version": "1.0.0",
+  "description": "Telegram bot for recognition music from coub or youtube",
+  "main": "src/index.js",
+  "scripts": {
+    "dev": "NODE_ENV=development nodemon --trace-warnings --inspect=0.0.0.0:9229 src/index.js",
+    "prod": "NODE_ENV=production node src/index.js",
+    "eslint": "node node_modules/.bin/eslint src/**/*.js",
+    "eslint:fix": "node node_modules/.bin/eslint --fix src/**/*.js"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm run eslint"
+    }
+  },
+  "engines": {
+    "node": "13.11.x"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/srdn25/music-recognition-bot.git"
+  },
+  "author": "Denis Sorokin",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/srdn25/music-recognition-bot/issues"
+  },
+  "devDependencies": {
+    "dotenv": "^8.2.0",
+    "eslint": "^7.2.0",
+    "husky": "^4.2.5"
+  },
+  "dependencies": {
+    "node-redis-scan": "^1.2.1",
+    "redis": "^3.0.2",
+    "nodemon": "^2.0.4",
+    "telegraf": "^3.38.0"
+  }
+}
