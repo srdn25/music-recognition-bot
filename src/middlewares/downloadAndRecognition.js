@@ -68,6 +68,9 @@ const downloadAndRecognition = async (ctx) => {
           ctx.reply(err);
         }
       }
+      break;
+    default:
+      ctx.reply('Support other websites in development. For help you can donate BTC to wallet in bot about');
   }
 
 };
