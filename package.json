@@ -1,5 +1,5 @@
 {
-  "name": "Music recognition bot",
+  "name": "Music_recognition_bot",
   "version": "1.0.0",
   "description": "Telegram bot for recognition music from coub or youtube",
   "main": "src/index.js",
