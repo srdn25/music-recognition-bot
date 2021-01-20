@@ -12,11 +12,11 @@ class Provider {
 
   /**
    * Get music link from video
-   * @returns {object} data Response
+   * @returns {Promise<object>} data Response
    * @returns {string} data.default Default quality link is required
    * @returns {string} data.high High quality link
    */
-  getMusicLink () {
+  async getMusicLink () {
     throw Error('Method getMusicLink must be implement');
   }
 }

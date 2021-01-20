@@ -1,14 +1,14 @@
 const axios = require('axios');
 const Provider = require('./Provider');
 
-const _getLinkFromHtml = async (html) => {
+const _getLinkFromHtml = (html) => {
   try {
     const part = html.split('<script id=\'coubPageCoubJson\' type=\'text/json\'>')[ 1 ];
     const jsonString = part.split('</script>')[ 0 ];
     return JSON.parse(jsonString).file_versions;
   } catch (err) {
     console.log(err);
-    throw 'Can\'t get link to music from coub page';
+    throw Error('Can\'t get link to music from coub page');
   }
 };
 
@@ -17,18 +17,18 @@ class Coube extends Provider {
     super();
   }
 
-  static async getMusicLink (link) {
+  async getMusicLink (link) {
     try {
       const { data = null } = await axios.get(link);
 
       if (!data) {
-        throw 'Can\'t get data from coub';
+        throw Error('Can\'t get data from coub');
       }
 
       const result = _getLinkFromHtml(data);
 
       if (!result) {
-        throw 'Can\'t get music link';
+        throw Error('Can\'t get music link');
       }
 
       return {
@@ -37,8 +37,13 @@ class Coube extends Provider {
       };
 
     } catch (err) {
-      console.log(err);
-      throw 'Unexpected error when try get music link from coub';
+      // eslint-disable-next-line no-prototype-builtins
+      if (typeof err === 'object' && !err.hasOwnProperty('message')) {
+        console.log(err);
+        throw 'Unexpected error when try get music link from coub';
+      } else {
+        throw err.message || err;
+      }
     }
   }
 }
