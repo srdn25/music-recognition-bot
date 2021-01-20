@@ -42,7 +42,7 @@ const downloadAndRecognition = async (ctx) => {
           const jsonData = JSON.parse(redisData);
           await ctx.telegram.sendAudio(
             ctx.chat.id,
-            jsonData.high,
+            { url: jsonData.high, filename: jsonData.title || 'Unknown' },
             {
               title: jsonData.title || 'Unknown',
               reply_to_message_id: ctx.message.message_id,
@@ -59,7 +59,7 @@ const downloadAndRecognition = async (ctx) => {
 
         await ctx.telegram.sendAudio(
           ctx.chat.id,
-          link.high,
+          { url: link.high, filename: link.title || 'Unknown' },
           {
             title: link.title || 'Unknown',
             reply_to_message_id: ctx.message.message_id,
@@ -67,10 +67,10 @@ const downloadAndRecognition = async (ctx) => {
           },
         );
       } catch (err) {
-        if (typeof err === 'object') {
+        if (typeof err === 'object' || !err.message) {
           ctx.reply('Unknown error');
         } else {
-          ctx.reply(err);
+          ctx.reply(err.message || err);
         }
       }
       break;
@@ -85,7 +85,7 @@ const downloadAndRecognition = async (ctx) => {
           const jsonData = JSON.parse(redisData);
           await ctx.telegram.sendAudio(
             ctx.chat.id,
-            jsonData.high,
+            { url: jsonData.high, filename: jsonData.title || 'Unknown' },
             {
               title: jsonData.title || 'Unknown',
               reply_to_message_id: ctx.message.message_id,
@@ -102,7 +102,7 @@ const downloadAndRecognition = async (ctx) => {
 
         await ctx.telegram.sendAudio(
           ctx.chat.id,
-          link.default,
+          { url: link.high, filename: link.title || 'Unknown' },
           {
             title: link.title || 'Unknown',
             reply_to_message_id: ctx.message.message_id,
@@ -110,10 +110,10 @@ const downloadAndRecognition = async (ctx) => {
           },
         );
       } catch (err) {
-        if (typeof err === 'object') {
+        if (typeof err === 'object' || !err.message) {
           ctx.reply('Unknown error');
         } else {
-          ctx.reply(err);
+          ctx.reply(err.message || err);
         }
       }
       break;
@@ -128,7 +128,7 @@ const downloadAndRecognition = async (ctx) => {
           const jsonData = JSON.parse(redisData);
           await ctx.telegram.sendAudio(
             ctx.chat.id,
-            jsonData.high,
+            { url: jsonData.high, filename: jsonData.title || 'Unknown' },
             {
               title: jsonData.title || 'Unknown',
               reply_to_message_id: ctx.message.message_id,
@@ -146,7 +146,7 @@ const downloadAndRecognition = async (ctx) => {
 
         await ctx.telegram.sendAudio(
           ctx.chat.id,
-          link.high,
+          { url: link.high, filename: link.title || 'Unknown' },
           {
             title: link.title || 'Unknown',
             reply_to_message_id: ctx.message.message_id,
@@ -154,10 +154,10 @@ const downloadAndRecognition = async (ctx) => {
           },
         );
       } catch (err) {
-        if (typeof err === 'object') {
+        if (typeof err === 'object' || !err.message) {
           ctx.reply('Unknown error');
         } else {
-          ctx.reply(err);
+          ctx.reply(err.message || err);
         }
       }
       break;
