@@ -7,6 +7,7 @@ const {
 
 const Coube = require('../services/coube.service');
 const Youtube = require('../services/youtube.service');
+const Tiktok = require('../services/tiktok.service');
 
 const {
   redisKeys,
@@ -14,8 +15,9 @@ const {
 
 const coube = new Coube();
 const youtube = new Youtube();
+const tiktok = new Tiktok();
 
-const regExp = /(https:\/\/)?(www\.)?(coub|youtube|youtu)(\.com|\.be)(\/view\/|\/watch\?v=|\/)(\w+)/;
+const regExp = /(https:\/\/)?(www\.)?(coub|youtube|youtu|tiktok)(\.com|\.be)(\/@.+)?(\/view\/|\/watch\?v=|\/)(\w+)/;
 const validMessage = (msg) => regExp.exec(msg);
 
 const downloadAndRecognition = async (ctx) => {
@@ -72,7 +74,6 @@ const downloadAndRecognition = async (ctx) => {
         }
       }
       break;
-
     case 'youtu':
     case 'youtube':
       try {
@@ -116,6 +117,51 @@ const downloadAndRecognition = async (ctx) => {
         }
       }
       break;
+    case 'tiktok':
+      try {
+        const redisKey = `${redisKeys.tiktok.musicLinkByVideoId}:${videoId}`;
+        const thumb = path.join(__dirname, '../attachments/logo.jpg');
+        const redisData = await redisGet(redisKey);
+
+        // TODO: if redisData.title is null ask this in ARC
+        if (redisData) {
+          const jsonData = JSON.parse(redisData);
+          await ctx.telegram.sendAudio(
+            ctx.chat.id,
+            jsonData.high,
+            {
+              title: jsonData.title || 'Unknown',
+              reply_to_message_id: ctx.message.message_id,
+              thumb: jsonData.coverThumb || thumb,
+            },
+          );
+
+          return;
+        }
+
+        const link = await tiktok.getMusicLink(message);
+
+        // TODO: if link.title is null ask this in ARC
+        redisSet(redisKey, JSON.stringify(link));
+
+        await ctx.telegram.sendAudio(
+          ctx.chat.id,
+          link.high,
+          {
+            title: link.title || 'Unknown',
+            reply_to_message_id: ctx.message.message_id,
+            thumb: link.coverThumb || thumb,
+          },
+        );
+      } catch (err) {
+        if (typeof err === 'object') {
+          ctx.reply('Unknown error');
+        } else {
+          ctx.reply(err);
+        }
+      }
+      break;
+
     default:
       ctx.reply('Support other websites in development. For help you can donate BTC to wallet in bot about');
   }

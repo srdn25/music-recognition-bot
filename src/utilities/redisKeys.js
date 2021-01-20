@@ -5,4 +5,7 @@ module.exports = {
   youtube: {
     musicLinkByVideoId: 'youtube:music_link',
   },
+  tiktok: {
+    musicLinkByVideoId: 'tiktok:music_link',
+  }
 };
