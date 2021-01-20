@@ -34,8 +34,8 @@ class Youtube extends Provider {
       const sortedQuality = audioList.sort((a, b) => b.abr - a.abr);
 
       return {
-        high: sortedQuality[0],
-        default: sortedQuality[sortedQuality.length - 1],
+        high: sortedQuality[0].url,
+        default: sortedQuality[sortedQuality.length - 1].url,
         title: videoInfo.title,
       };
     } catch (err) {
