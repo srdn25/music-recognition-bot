@@ -5,13 +5,15 @@ const {
   getKey: redisGet,
 } = require('../services/redis.service');
 
-const {
-  musicLink,
-} = require('../services/coube.service');
+const Coube = require('../services/coube.service');
+const Youtube = require('../services/youtube.service');
 
 const {
   redisKeys,
 } = require('../utilities');
+
+const coube = new Coube();
+const youtube = new Youtube();
 
 const regExp = /(https:\/\/)?(www\.)?(coub|youtube|youtu)(\.com|\.be)(\/view\/|\/watch\?v=|\/)(\w+)/;
 const validMessage = (msg) => regExp.exec(msg);
@@ -48,13 +50,56 @@ const downloadAndRecognition = async (ctx) => {
           return;
         }
 
-        const link = await musicLink(message);
+        const link = await coube.getMusicLink(message);
 
         redisSet(redisKey, JSON.stringify(link));
 
         await ctx.telegram.sendAudio(
           ctx.chat.id,
           link.high,
+          {
+            title: 'Unknown',
+            reply_to_message_id: ctx.message.message_id,
+            thumb,
+          },
+        );
+      } catch (err) {
+        if (typeof err === 'object') {
+          ctx.reply('Unknown error');
+        } else {
+          ctx.reply(err);
+        }
+      }
+      break;
+
+    case 'youtu':
+    case 'youtube':
+      try {
+        const redisKey = `${redisKeys.youtube.musicLinkByVideoId}:${videoId}`;
+        const thumb = path.join(__dirname, '../attachments/logo.jpg');
+        const redisData = await redisGet(redisKey);
+
+        if (redisData) {
+          await ctx.telegram.sendAudio(
+            ctx.chat.id,
+            JSON.parse(redisData).default,
+            {
+              title: 'Unknown',
+              reply_to_message_id: ctx.message.message_id,
+              thumb,
+            },
+          );
+
+          return;
+        }
+
+        const link = await youtube.getMusicLink(message);
+
+        redisSet(redisKey, JSON.stringify(link));
+
+        await ctx.telegram.sendAudio(
+          ctx.chat.id,
+          link.default,
           {
             title: 'Unknown',
             reply_to_message_id: ctx.message.message_id,

@@ -36,6 +36,7 @@
     "node-redis-scan": "^1.2.1",
     "nodemon": "^2.0.4",
     "redis": "^3.0.2",
-    "telegraf": "^3.38.0"
+    "telegraf": "^3.38.0",
+    "youtube-dl": "^3.1.0"
   }
 }

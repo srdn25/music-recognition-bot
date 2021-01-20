@@ -1,5 +1,8 @@
 module.exports = {
   coub: {
-    musicLinkByVideoId: 'coub_music_link',
+    musicLinkByVideoId: 'coub:music_link',
+  },
+  youtube: {
+    musicLinkByVideoId: 'youtube:music_link',
   },
 };
