@@ -49,10 +49,6 @@ class Youtube extends Provider {
     }
   }
 
-  async downloadMusic (link) {
-    const result = await promisifyWrapper(youtubeDl.exec, [ link, ['-x', '--audio-format', 'mp3'], { outtmpl: Date.now(), o: Date.now() } ]);
-    return result.join('\n');
-  }
 }
 
 module.exports = Youtube;
