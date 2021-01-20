@@ -34,6 +34,7 @@ class Coube extends Provider {
       return {
         high: result.html5.audio.high.url,
         default: result.mobile.audio[ 0 ],
+        title: null,
       };
 
     } catch (err) {

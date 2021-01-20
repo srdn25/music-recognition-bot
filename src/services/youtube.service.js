@@ -36,6 +36,7 @@ class Youtube extends Provider {
       return {
         high: sortedQuality[0],
         default: sortedQuality[sortedQuality.length - 1],
+        title: videoInfo.title,
       };
     } catch (err) {
       // eslint-disable-next-line no-prototype-builtins

@@ -37,11 +37,12 @@ const downloadAndRecognition = async (ctx) => {
         const redisData = await redisGet(redisKey);
 
         if (redisData) {
+          const jsonData = JSON.parse(redisData);
           await ctx.telegram.sendAudio(
             ctx.chat.id,
-            JSON.parse(redisData).high,
+            jsonData.high,
             {
-              title: 'Unknown',
+              title: jsonData.title || 'Unknown',
               reply_to_message_id: ctx.message.message_id,
               thumb,
             },
@@ -58,7 +59,7 @@ const downloadAndRecognition = async (ctx) => {
           ctx.chat.id,
           link.high,
           {
-            title: 'Unknown',
+            title: link.title || 'Unknown',
             reply_to_message_id: ctx.message.message_id,
             thumb,
           },
@@ -80,11 +81,12 @@ const downloadAndRecognition = async (ctx) => {
         const redisData = await redisGet(redisKey);
 
         if (redisData) {
+          const jsonData = JSON.parse(redisData);
           await ctx.telegram.sendAudio(
             ctx.chat.id,
-            JSON.parse(redisData).default,
+            jsonData.high,
             {
-              title: 'Unknown',
+              title: jsonData.title || 'Unknown',
               reply_to_message_id: ctx.message.message_id,
               thumb,
             },
@@ -101,7 +103,7 @@ const downloadAndRecognition = async (ctx) => {
           ctx.chat.id,
           link.default,
           {
-            title: 'Unknown',
+            title: link.title || 'Unknown',
             reply_to_message_id: ctx.message.message_id,
             thumb,
           },

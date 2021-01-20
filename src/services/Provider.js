@@ -15,6 +15,7 @@ class Provider {
    * @returns {Promise<object>} data Response
    * @returns {string} data.default Default quality link is required
    * @returns {string} data.high High quality link
+   * @returns {string} data.title Name from link
    */
   async getMusicLink () {
     throw Error('Method getMusicLink must be implement');
