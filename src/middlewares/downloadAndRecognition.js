@@ -1,22 +1,16 @@
 const path = require('path');
 
-const {
-  setKey: redisSet,
-  getKey: redisGet,
-} = require('../services/redis.service');
-
 const Coube = require('../services/coube.service');
 const Youtube = require('../services/youtube.service');
 const Tiktok = require('../services/tiktok.service');
 
-const {
-  redisKeys,
-  log,
-} = require('../utilities');
+const { log } = require('../utilities');
 
 const coube = new Coube();
 const youtube = new Youtube();
 const tiktok = new Tiktok();
+
+const thumb = path.join(__dirname, '../attachments/logo.jpg');
 
 const regExp = /(https:\/\/)?(www\.)?(coub|youtube|youtu|tiktok)(\.com|\.be)(\/@.+)?(\/view\/|\/watch\?v=|\/)(\w+)/;
 const validMessage = (msg) => regExp.exec(msg);
@@ -35,17 +29,14 @@ const downloadAndRecognition = async (ctx) => {
   switch (site) {
     case 'coub':
       try {
-        const redisKey = `${redisKeys.coub.musicLinkByVideoId}:${videoId}`;
-        const thumb = path.join(__dirname, '../attachments/logo.jpg');
-        const redisData = await redisGet(redisKey);
+        const redisData = await coube.getMusicDataFromRedis(videoId);
 
         if (redisData) {
-          const jsonData = JSON.parse(redisData);
           await ctx.telegram.sendAudio(
             ctx.chat.id,
-            { url: jsonData.high, filename: jsonData.title || 'Unknown' },
+            { url: redisData.high, filename: redisData.title || 'Unknown' },
             {
-              title: jsonData.title || 'Unknown',
+              title: redisData.title || 'Unknown',
               reply_to_message_id: ctx.message.message_id,
               thumb,
             },
@@ -56,7 +47,7 @@ const downloadAndRecognition = async (ctx) => {
 
         const link = await coube.getMusicLink(message);
 
-        redisSet(redisKey, JSON.stringify(link));
+        coube.saveMusicDataToRedis({ videoId, music: link });
 
         await ctx.telegram.sendAudio(
           ctx.chat.id,
@@ -79,17 +70,14 @@ const downloadAndRecognition = async (ctx) => {
     case 'youtu':
     case 'youtube':
       try {
-        const redisKey = `${redisKeys.youtube.musicLinkByVideoId}:${videoId}`;
-        const thumb = path.join(__dirname, '../attachments/logo.jpg');
-        const redisData = await redisGet(redisKey);
+        const redisData = await youtube.getMusicDataFromRedis(videoId);
 
         if (redisData) {
-          const jsonData = JSON.parse(redisData);
           await ctx.telegram.sendAudio(
             ctx.chat.id,
-            { url: jsonData.high, filename: jsonData.title || 'Unknown' },
+            { url: redisData.high, filename: redisData.title || 'Unknown' },
             {
-              title: jsonData.title || 'Unknown',
+              title: redisData.title || 'Unknown',
               reply_to_message_id: ctx.message.message_id,
               thumb,
             },
@@ -100,7 +88,7 @@ const downloadAndRecognition = async (ctx) => {
 
         const link = await youtube.getMusicLink(message);
 
-        redisSet(redisKey, JSON.stringify(link));
+        youtube.saveMusicDataToRedis({ videoId, music: link });
 
         await ctx.telegram.sendAudio(
           ctx.chat.id,
@@ -122,20 +110,17 @@ const downloadAndRecognition = async (ctx) => {
       break;
     case 'tiktok':
       try {
-        const redisKey = `${redisKeys.tiktok.musicLinkByVideoId}:${videoId}`;
-        const thumb = path.join(__dirname, '../attachments/logo.jpg');
-        const redisData = await redisGet(redisKey);
+        const redisData = await tiktok.getMusicDataFromRedis(videoId);
 
         // TODO: if redisData.title is null ask this in ARC
         if (redisData) {
-          const jsonData = JSON.parse(redisData);
           await ctx.telegram.sendAudio(
             ctx.chat.id,
-            { url: jsonData.high, filename: jsonData.title || 'Unknown' },
+            { url: redisData.high, filename: redisData.title || 'Unknown' },
             {
-              title: jsonData.title || 'Unknown',
+              title: redisData.title || 'Unknown',
               reply_to_message_id: ctx.message.message_id,
-              thumb: jsonData.coverThumb || thumb,
+              thumb: redisData.coverThumb || thumb,
             },
           );
 
@@ -145,7 +130,7 @@ const downloadAndRecognition = async (ctx) => {
         const link = await tiktok.getMusicLink(message);
 
         // TODO: if link.title is null ask this in ARC
-        redisSet(redisKey, JSON.stringify(link));
+        youtube.saveMusicDataToRedis({ videoId, music: link });
 
         await ctx.telegram.sendAudio(
           ctx.chat.id,

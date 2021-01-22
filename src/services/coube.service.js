@@ -1,6 +1,9 @@
 const axios = require('axios');
 const Provider = require('./Provider');
-const { log } = require('../utilities');
+const {
+  redisKeys,
+  log,
+} = require('../utilities');
 
 const _getLinkFromHtml = (html) => {
   try {
@@ -16,6 +19,7 @@ const _getLinkFromHtml = (html) => {
 class Coube extends Provider {
   constructor() {
     super();
+    this.redisKeys = redisKeys.coub;
   }
 
   async getMusicLink (link) {

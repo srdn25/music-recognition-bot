@@ -1,6 +1,10 @@
 const youtubeDl = require('youtube-dl');
 const Provider = require('./Provider');
-const { promisifyWrapper, log } = require('../utilities');
+const {
+  promisifyWrapper,
+  redisKeys,
+  log,
+} = require('../utilities');
 
 const AVAILABLE_AUDIO_FORMATS = ['mp3', 'm4a'];
 
@@ -19,6 +23,7 @@ class Youtube extends Provider {
   constructor() {
     super();
     this.VIDEO_MAX_LENGTH = 60 * 5; // 5 mins
+    this.redisKeys = redisKeys.youtube;
   }
 
   async getMusicLink (link) {
