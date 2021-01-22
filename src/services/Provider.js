@@ -1,7 +1,11 @@
+const path = require('path');
+
 const {
   setKey: redisSet,
   getKey: redisGet,
 } = require('./redis.service');
+
+const { handleSwitchCaseErrors } = require('../handlers/errors.handler');
 
 /**
  * Provider class
@@ -14,6 +18,8 @@ class Provider {
       throw Error('Abstract classes cant be initialised');
     }
     this.redisKeys = {};
+    this.appLogo = path.join(__dirname, '../attachments/logo.jpg');
+    this.defaultThumb = this.appLogo;
   }
 
   /**
@@ -85,9 +91,58 @@ class Provider {
    * @param {string | null} music.coverThumb Music link to poster
    * @returns {Promise} null
    */
-  // eslint-disable-next-line no-unused-vars
   async sendResultToTelegram (data) {
+    const {
+      tgContext,
+      music,
+    } = data;
+
+    // TODO: send text info about music
+
+    await tgContext.telegram.sendAudio(
+      tgContext.chat.id,
+      { url: music.high, filename: music.title || 'Unknown' },
+      {
+        title: music.title || 'Unknown',
+        reply_to_message_id: tgContext.message.message_id,
+        thumb: this.defaultThumb,
+      },
+    );
     throw Error('Method sendResultToTelegram must be implement');
+  }
+
+  /**
+   * Handle request for download music and recognition
+   * @param {object} data Payload
+   * @param {object} data.tgContext Telegram client context
+   * @param {string} data.videoId Video ID
+   */
+  async handlerDownloadAndRecognitionRequest (data) {
+    const {
+      videoId,
+      tgContext,
+    } = data;
+
+    try {
+      const message = tgContext.message.text;
+
+      const redisData = await this.getMusicDataFromRedis(videoId);
+
+      // TODO: if redisData.title is null ask this in ARC
+      if (redisData) {
+        await this.sendResultToTelegram(tgContext, redisData);
+        return;
+      }
+
+      // TODO: if link.title is null ask this in ARC
+      const music = await this.getMusicLink(message);
+
+      this.saveMusicDataToRedis({ videoId, music });
+
+      await this.sendResultToTelegram(tgContext, music);
+    } catch (err) {
+      handleSwitchCaseErrors(err, tgContext.reply);
+    }
   }
 }
 
