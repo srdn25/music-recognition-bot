@@ -2,6 +2,7 @@ const path = require('path');
 
 const {
   setKey: redisSet,
+  setKeyExp: redisSetEx,
   getKey: redisGet,
 } = require('./redis.service');
 
@@ -76,7 +77,14 @@ class Provider {
     } = data;
 
     const redisKey = `${this.redisKeys.musicLinkByVideoId}:${videoId}`;
-    redisSet(redisKey, JSON.stringify(music));
+    const payload = JSON.stringify(music);
+
+    if (this.redisExTime) {
+      redisSetEx(redisKey, payload, this.redisExTime);
+      return;
+    }
+
+    redisSet(redisKey, payload);
   }
 
   /**
@@ -101,14 +109,13 @@ class Provider {
 
     await tgContext.telegram.sendAudio(
       tgContext.chat.id,
-      { url: music.high, filename: music.title || 'Unknown' },
+      { url: music.high || music.default, filename: music.title || 'Unknown' },
       {
         title: music.title || 'Unknown',
         reply_to_message_id: tgContext.message.message_id,
-        thumb: this.defaultThumb,
+        // thumb: music.coverThumb || this.defaultThumb,
       },
     );
-    throw Error('Method sendResultToTelegram must be implement');
   }
 
   /**
@@ -130,7 +137,7 @@ class Provider {
 
       // TODO: if redisData.title is null ask this in ARC
       if (redisData) {
-        await this.sendResultToTelegram(tgContext, redisData);
+        await this.sendResultToTelegram({ tgContext, music: redisData });
         return;
       }
 
@@ -139,7 +146,7 @@ class Provider {
 
       this.saveMusicDataToRedis({ videoId, music });
 
-      await this.sendResultToTelegram(tgContext, music);
+      await this.sendResultToTelegram({ tgContext, music });
     } catch (err) {
       handleSwitchCaseErrors(err, tgContext.reply);
     }

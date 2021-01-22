@@ -24,6 +24,7 @@ class Youtube extends Provider {
     super();
     this.VIDEO_MAX_LENGTH = 60 * 5; // 5 mins
     this.redisKeys = redisKeys.youtube;
+    this.redisExTime = 15; // seconds
   }
 
   async getMusicLink (link) {

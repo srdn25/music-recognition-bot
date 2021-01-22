@@ -18,7 +18,7 @@ const downloadAndRecognition = async (ctx) => {
   }
 
   const site = parsedMessage[3];
-  const videoId = parsedMessage[7];
+  const videoId = parsedMessage[8];
 
   switch (site) {
     case 'coub':
