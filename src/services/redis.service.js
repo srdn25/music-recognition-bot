@@ -1,5 +1,6 @@
 const redisService = require('redis');
 const redisScan = require('node-redis-scan');
+const { log } = require('../utilities');
 
 const {
   MUSIC_BOT_REDIS_PORT,
@@ -18,8 +19,8 @@ const client = redisService.createClient(clientOptions);
 const scanner = new redisScan(client);
 
 client.on('error', function (err) {
-  console.log('TG_BOT redis ERR');
-  console.error(err);
+  log.info('TG_BOT redis ERR');
+  log.error(err);
 });
 
 const setKeyExp = (key, value, seconds, cb) => client.setex(key, seconds, value, cb);

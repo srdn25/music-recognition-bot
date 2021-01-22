@@ -1,5 +1,6 @@
 const axios = require('axios');
 const Provider = require('./Provider');
+const { log } = require('../utilities');
 
 const _getLinkFromHtml = (html) => {
   try {
@@ -7,7 +8,7 @@ const _getLinkFromHtml = (html) => {
     const jsonString = part.split('</script>')[ 0 ];
     return JSON.parse(jsonString).file_versions;
   } catch (err) {
-    console.log(err);
+    log.error(err);
     throw Error('Can\'t get link to music from coub page');
   }
 };
@@ -40,7 +41,7 @@ class Coube extends Provider {
     } catch (err) {
       // eslint-disable-next-line no-prototype-builtins
       if (typeof err === 'object' && !err.hasOwnProperty('message')) {
-        console.log(err);
+        log.error(err);
         throw 'Unexpected error when try get music link from coub';
       } else {
         throw err.message || err;

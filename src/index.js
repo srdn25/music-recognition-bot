@@ -1,4 +1,7 @@
-const { isProd } = require('./utilities');
+const {
+  isProd,
+  log,
+} = require('./utilities');
 
 if (!isProd) {
   require('dotenv').config();
@@ -22,7 +25,7 @@ const {
 const Telegraf = require('telegraf');
 const bot = new Telegraf(TG_MUSIC_BOT_TOKEN);
 
-bot.catch((err) => console.log(err));
+bot.catch((err) => log.error(err));
 
 bot.command('help', helpCmd);
 bot.command('start', startCmd);

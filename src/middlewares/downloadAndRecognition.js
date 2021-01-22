@@ -11,6 +11,7 @@ const Tiktok = require('../services/tiktok.service');
 
 const {
   redisKeys,
+  log,
 } = require('../utilities');
 
 const coube = new Coube();
@@ -67,6 +68,7 @@ const downloadAndRecognition = async (ctx) => {
           },
         );
       } catch (err) {
+        log.error(err);
         if (typeof err === 'object' || !err.message) {
           ctx.reply('Unknown error');
         } else {
@@ -110,6 +112,7 @@ const downloadAndRecognition = async (ctx) => {
           },
         );
       } catch (err) {
+        log.error(err);
         if (typeof err === 'object' || !err.message) {
           ctx.reply('Unknown error');
         } else {
@@ -154,6 +157,7 @@ const downloadAndRecognition = async (ctx) => {
           },
         );
       } catch (err) {
+        log.error(err);
         if (typeof err === 'object' || !err.message) {
           ctx.reply('Unknown error');
         } else {

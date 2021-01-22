@@ -1,6 +1,6 @@
 const youtubeDl = require('youtube-dl');
 const Provider = require('./Provider');
-const { promisifyWrapper } = require('../utilities');
+const { promisifyWrapper, log } = require('../utilities');
 
 const AVAILABLE_AUDIO_FORMATS = ['mp3', 'm4a'];
 
@@ -41,7 +41,7 @@ class Youtube extends Provider {
     } catch (err) {
       // eslint-disable-next-line no-prototype-builtins
       if (typeof err === 'object' && !err.hasOwnProperty('message')) {
-        console.log(err);
+        log.error(err);
         throw 'Unexpected error when try get music link from youtube';
       } else {
         throw err.message || err;
