@@ -6,7 +6,7 @@ const coube = new Coube();
 const youtube = new Youtube();
 const tiktok = new Tiktok();
 
-const regExp = /(https:\/\/)?(www\.)?(coub|youtube|youtu|tiktok)(\.com|\.be)(\/@.+)?(\/view\/|\/watch\?v=|\/)(\w+)/;
+const regExp = /(https:\/\/)?(www\.)?(coub|youtube|youtu|tiktok)(\.com|\.be)(\/\?.+)?(\/@.+)?(\/view\/|\/watch\?v=|\/)(\w+)/;
 const validMessage = (msg) => regExp.exec(msg);
 
 const downloadAndRecognition = async (ctx) => {
