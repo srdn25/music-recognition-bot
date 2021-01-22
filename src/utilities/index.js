@@ -21,4 +21,5 @@ module.exports = {
   getName,
   promisifyWrapper,
   redisKeys: require('./redisKeys'),
+  logger: require('./logger'),
 };

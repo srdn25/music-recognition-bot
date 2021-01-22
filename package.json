@@ -37,6 +37,7 @@
     "nodemon": "^2.0.4",
     "redis": "^3.0.2",
     "telegraf": "^3.38.0",
+    "winston": "^3.3.3",
     "youtube-dl": "^3.1.0"
   }
 }
